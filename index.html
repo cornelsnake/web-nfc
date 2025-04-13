@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web NFC Test</title>
+    <title>Web NFC Tag Writer</title>
 </head>
 <body>
-    <h1>Web NFC Test Page</h1>
-    <p>Нажмите на кнопку, чтобы записать данные на NFC-метку:</p>
+    <h1>NFC Метка</h1>
+    <p>Введите метку, которую вы хотите записать на NFC-метку (по умолчанию: 5283653):</p>
     <input type="text" id="nfcData" placeholder="Введите данные" value="5283653">
     <button id="writeButton">Записать на NFC</button>
     <p id="status"></p>
@@ -24,9 +24,9 @@
                     await writer.write({
                         records: [{ recordType: "text", data: data }]
                     });
-                    status.textContent = `Данные "${data}" успешно записаны на NFC-метку!`;
+                    status.textContent = `Метка "${data}" успешно записана на NFC! Поднесите считывающее устройство для чтения метки.`;
                 } catch (error) {
-                    status.textContent = `Ошибка: ${error.message}`;
+                    status.textContent = `Ошибка записи: ${error.message}`;
                 }
             } else {
                 status.textContent = "Ваш браузер не поддерживает Web NFC.";
