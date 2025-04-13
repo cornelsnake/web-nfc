@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web NFC Writer</title>
+</head>
+<body>
+    <h1>Web NFC Writer</h1>
+    <p>Введите данные, которые вы хотите записать на NFC-метку (по умолчанию: 5283653):</p>
+    <input type="text" id="nfcData" placeholder="Введите данные">
+    <button id="writeButton">Записать на NFC</button>
+    <p id="status"></p>
+
+    <script>
+        document.getElementById("writeButton").addEventListener("click", async () => {
+            const inputField = document.getElementById("nfcData");
+            const data = inputField.value || "5283653"; // Используем значение "5283653", если поле пустое
+            const status = document.getElementById("status");
+
+            if ('NDEFReader' in window) {
+                try {
+                    const writer = new NDEFReader();
+                    await writer.write({
+                        records: [{ recordType: "text", data: data }]
+                    });
+                    status.textContent = `Данные "${data}" успешно записаны на NFC-метку!`;
+                } catch (error) {
+                    status.textContent = `Ошибка записи: ${error.message}`;
+                }
+            } else {
+                status.textContent = "Ваш браузер не поддерживает Web NFC.";
+            }
+        });
+    </script>
+</body>
+</html>
