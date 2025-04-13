@@ -13,25 +13,37 @@
     <p id="status"></p>
 
     <script>
-        document.getElementById("writeButton").addEventListener("click", async () => {
-            const inputField = document.getElementById("nfcData");
-            const data = inputField.value || "5283653"; // Значение по умолчанию
-            const status = document.getElementById("status");
+       let isWriting = false;
 
-            if ('NDEFReader' in window) {
-                try {
-                    const writer = new NDEFReader();
-                    await writer.write({
-                        records: [{ recordType: "text", data: data }]
-                    });
-                    status.textContent = `Метка "${data}" успешно записана на NFC! Поднесите считывающее устройство для чтения метки.`;
-                } catch (error) {
-                    status.textContent = `Ошибка записи: ${error.message}`;
-                }
-            } else {
-                status.textContent = "Ваш браузер не поддерживает Web NFC.";
-            }
-        });
+document.getElementById("writeButton").addEventListener("click", async () => {
+    const inputField = document.getElementById("nfcData");
+    const data = inputField.value || "5283653"; // Значение по умолчанию
+    const status = document.getElementById("status");
+
+    if (isWriting) {
+        status.textContent = "Подождите, пока завершится текущая операция.";
+        return;
+    }
+
+    isWriting = true;
+
+    if ('NDEFReader' in window) {
+        try {
+            const writer = new NDEFReader();
+            await writer.write({
+                records: [{ recordType: "text", data: data }]
+            });
+            status.textContent = `Метка "${data}" успешно записана на NFC!`;
+        } catch (error) {
+            status.textContent = `Ошибка записи: ${error.message}`;
+        } finally {
+            isWriting = false;
+        }
+    } else {
+        status.textContent = "Ваш браузер не поддерживает Web NFC.";
+        isWriting = false;
+    }
+});
     </script>
 </body>
 </html>
